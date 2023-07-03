@@ -33,9 +33,16 @@ sap.ui.define([
             onEmpCreate: function () {
                 this.oRouter.navTo("RouteNewEmpCreation");
                 this.getView().getParent().getParent().setMode("HideMode");
+            },
+
+            navigateToEmpDetail: function (oEvent) {
+                let oItem = oEvent.getParameters().listItem,
+                    oSelectedObject = oItem.getBindingContext().getObject(),
+                    empId = parseInt(oSelectedObject.EMP_ID);
+                this.oRouter.navTo("RouteEmpDetail", {
+                    empId : empId
+                });
             }
-
-
 
 
 

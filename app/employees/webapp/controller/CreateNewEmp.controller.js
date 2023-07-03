@@ -48,7 +48,7 @@ sap.ui.define([
 
             _createAddModel: function () {
                 return new JSONModel ({
-                    "ADDRESS_ID": null,
+                    // "ADDRESS_ID": null,
                     "COUNTRY_ID": null,
                     "COUNTRY_NAME": null,
                     "STATE_ID": null,
@@ -56,7 +56,7 @@ sap.ui.define([
                     "REGION": null,
                     "ADD_TYPE_ID": null,
                     "ADD_TYPE": null,
-                    "LOCALATION_DETAILS": null
+                    "LOCATION_DETAILS": null
                 });
             },
 
@@ -188,22 +188,100 @@ sap.ui.define([
             onSaveEmp: function () {
                 var oView = this.getView(),
                     oController = this,
-                    oCreateEmpModel = oController.getView().getModel("oCreateEmpModel");
+                    oCreateEmpModel = oView.getModel("oCreateEmpModel"),
+                    oCreateEmpModelData = oCreateEmpModel.getData(),
+                    aAddObject = [];
                 this.oGlobalBusyDialog.open();
                 sap.ui.getCore().getMessageManager().removeAllMessages();
-                var oBinding = oView.getModel('catalogModel').bindList(
-                    "/StatementReplies",
+
+                oCreateEmpModelData.Address.forEach(oItem => {
+                    aAddObject.push({
+                        COUNTRY_ID: oItem.COUNTRY_ID,
+                        STATE_ID: oItem.STATE_ID,
+                        REGION: oItem.REGION,
+                        LOCATION_DETAILS: oItem.LOCATION_DETAILS,
+                        ADD_TYPE_ID: oItem.ADD_TYPE_ID
+                    });
+                });
+
+                let oEmpObject = {
+                    EMP_ID: parseInt(oCreateEmpModelData.EMP_ID),
+                    FIRST_NAME: oCreateEmpModelData.FIRST_NAME,
+                    MIDDLE_NAME: oCreateEmpModelData.MIDDLE_NAME,
+                    LAST_NAME: oCreateEmpModelData.LAST_NAME,
+                    EMAIL: oCreateEmpModelData.EMAIL,
+                    DATEOFBIRTH: oCreateEmpModelData.DATEOFBIRTH,
+                    PHONE: parseInt(oCreateEmpModelData.PHONE),
+                    SALARY: parseInt(oCreateEmpModelData.SALARY),
+                    DEPT_ID: parseInt(oCreateEmpModelData.DEPT_ID.replace(",","")),
+                    CURRENCY: oCreateEmpModelData.CURRENCY,
+                    LINK_TO_EMP_ADD: aAddObject
+                }
+                
+                let oBinding = oView.getModel().bindList(
+                    "/Employees",
                     undefined,
                     undefined,
                     undefined, {
                     $$updateGroupId: 'empGroup'
                 });
 
-                var oContext = oBinding.create(oCreateEmpModel.getData());
+                oBinding.create(oEmpObject);
 
-                oView.getModel("catalogModel").submitBatch("empGroup").then(function () {
-                    MessageBox.Success(`Employee ${oCreateEmpModel.getProperty("/EMP_ID")} \n created successfully`);
-                        
+                oView.getModel().submitBatch("empGroup").then(function () {
+                    oController._saveAssociations();   
+                }).catch(function (err) {
+                    oController.oGlobalBusyDialog.close();
+                    MessageBox.error(err.toString());
+                }); 
+            },
+
+            _saveAssociations: function () {
+                var oView = this.getView(),
+                    oController = this,
+                    oCreateEmpModel = oView.getModel("oCreateEmpModel"),
+                    oCreateEmpModelData = oCreateEmpModel.getData(),
+                    empId = parseInt(oCreateEmpModelData.EMP_ID);
+
+                let oProjBinding = oView.getModel().bindList(
+                    "/EmpProjects",
+                    undefined,
+                    undefined,
+                    undefined, {
+                    $$updateGroupId: 'associationsGroup'
+                });
+
+                oCreateEmpModelData.SEL_PROJECTS.forEach(oItem => {
+                    oProjBinding.create({
+                        EMP_ID: empId,
+                        PROJECT_ID: oItem
+                    });
+                });
+
+                let oTechBinding = oView.getModel().bindList(
+                    "/EmpTechnology",
+                    undefined,
+                    undefined,
+                    undefined, {
+                    $$updateGroupId: 'associationsGroup'
+                });
+
+                oCreateEmpModelData.SEL_PROJECTS.forEach(oItem => {
+                    oTechBinding.create({
+                        EMP_ID: empId,
+                        TECH_ID: oItem
+                    });
+                });
+
+                oView.getModel().submitBatch("associationsGroup").then(function () {
+                    oController.oGlobalBusyDialog.close();
+                    MessageBox.success(`Employee ${empId} \n created successfully`,{
+                        onClose: function () {
+                            oView.getParent().getParent().setMode("ShowHideMode");
+                            oController.oRouter.navTo("RouteMaster");
+                        }
+                    });
+
                 }).catch(function (err) {
                     oController.oGlobalBusyDialog.close();
                     MessageBox.error(err.toString());

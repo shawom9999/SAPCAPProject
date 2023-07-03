@@ -1,8 +1,8 @@
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
 <Dialog >
     <VBox class="sapUiSmallMargin">
-        <Label text="Adress ID" />
-        <Input type="Number" value="{oCreateAddModel>/ADDRESS_ID}"/>
+        <!-- <Label text="Adress ID" />
+        <Input type="Number" value="{oCreateAddModel>/ADDRESS_ID}"/> -->
         <Label text="Country" />
         <ComboBox id="AddCountryComboBox" items="{/Countries}" selectionChange="onAddCountrySelChange" selectedKey="{oCreateAddModel>/COUNTRY_ID}">
 			<core:Item text="{COUNTRY_NAME}" key="{COUNTRY_ID}" />

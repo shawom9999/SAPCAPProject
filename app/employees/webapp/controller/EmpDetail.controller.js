@@ -24,7 +24,18 @@ sap.ui.define([
 
                 if (empId) {
                     this.handleViewBinding(empId).then(() => {
-                        let oContext = this.getView().getBindingContext();
+                        let oContext = this.getView().getBindingContext(),
+                            oObject = oContext.getObject(),
+                            aProjId = oObject.LINK_TO_EMP_PROJ.map(oItem => oItem.PROJECT_ID),
+                            aTechId = oObject.LINK_TO_EMP_TECH.map(oItem => oItem.TECH_ID);
+
+                        this.oGlobalBusyDialog.close();
+                        this.getView().setModel(new JSONModel({
+                            "Address": oObject.LINK_TO_EMP_ADD,
+                            "SEL_PROJECTS": aProjId,
+                            "SEL_TECHNOLOGIES": aTechId
+                        }), "oEmpDetailModel");
+                        
                     });
                 } 
             },
@@ -39,19 +50,19 @@ sap.ui.define([
                         parameters: {
                             $expand: {
                                 "LINK_TO_DEPARTMENT": {},
-                                "LINK_TO_STLIB_RSN": {
+                                "LINK_TO_EMP_ADD": {
                                     $expand: {
-                                        "LINK_TO_RSN_TEXT": {
-                                            $select: "ITEM,LANGUAGE_CODE,ADDITIONAL_TEXT,STATEMENT_ID"
-                                        }
+                                        "LINK_TO_COUNTRY": {},
+                                        "LINK_TO_STATE": {},
+                                        "LINK_TO_ADD_TYPE": {}
                                     },
-                                    $select: "ITEM,RSN,DESCRIPTION,STATUS,VALID_TO,VALIDATED_BY,VALIDATED_ON,HISTORY_CRTD_DATE,HISTORY_CRTD_BY,STATEMENT_RSN_DESC"
+                                    $select: "ID,LOCATION_DETAILS,REGION"
                                 },
                                 "LINK_TO_EMP_PROJ": {
                                     $expand: {
                                         "LINK_TO_PROJECTS": {}
                                     },
-                                    $select: "PROJECT_ID,PROJECT_NAME"
+                                    $select: "PROJECT_ID"
                                 },
                                 "LINK_TO_EMP_TECH": {
                                     $select: "ID,EMP_ID,TECH_ID",
@@ -60,7 +71,7 @@ sap.ui.define([
                                     }
                                 }
                             },
-                            $select: "",
+                            $select: "EMP_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME,PHONE,EMAIL,DATEOFBIRTH,CURRENCY,SALARY,DEPT_ID",
                             $$updateGroupId: "empGroup"
                         },
                         events: {

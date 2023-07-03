@@ -78,9 +78,6 @@
 					</headerToolbar>
 					<columns>
 						<Column >
-							<Text text="Address Id"></Text>
-						</Column>
-						<Column >
 							<Text text="Country"></Text>
 						</Column>
 						<Column >
@@ -99,7 +96,6 @@
 					<items>
 						<ColumnListItem type="Navigation">
 							<cells>
-								<Text text="{oCreateEmpModel>ADDRESS_ID}" />
 								<Text text="{oCreateEmpModel>COUNTRY_NAME}" />
 								<Text text="{oCreateEmpModel>STATE_NAME}" />
 								<Text text="{oCreateEmpModel>ADD_TYPE}" />

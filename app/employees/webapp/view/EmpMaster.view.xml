@@ -4,7 +4,7 @@
     <Page id="page" title="Employees">
         <content>
             <Table id="deptEmpTable" items="{path: '/Employees', parameters: {$count: true}}"
-                updateFinished="handleEmpTableUpdateFinished">
+                updateFinished="handleEmpTableUpdateFinished" itemPress="navigateToEmpDetail">
                 <headerToolbar>
                     <OverflowToolbar >
                         <Title id="deptEmpTableTitle" text="List Of Employees" />

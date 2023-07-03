@@ -12,7 +12,7 @@ service CatalogService {
     entity Employees as projection on db.EMPLOYEES {
         *,
         // LINK_TO_EMP_DEPT : redirected to EmpDept,
-        // LINK_TO_EMP_ADD  : redirected to EmpAddress,
+        LINK_TO_EMP_ADD  : redirected to Address,
         LINK_TO_EMP_TECH : redirected to EmpTechnology,
         LINK_TO_EMP_PROJ : redirected to EmpProjects,
         LINK_TO_DEPARTMENT : redirected to Departments
