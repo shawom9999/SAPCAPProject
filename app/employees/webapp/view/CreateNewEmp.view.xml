@@ -1,0 +1,122 @@
+<mvc:View controllerName="employees.controller.CreateNewEmp"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
+    <Page id="page" title="Create New Employee">
+        <content>
+            <VBox class="sapUiSmallMargin">
+				<f:SimpleForm
+					editable="true"
+					layout="ResponsiveGridLayout"
+					title="Employee Details"
+					labelSpanXL="3"
+					labelSpanL="3"
+					labelSpanM="3"
+					labelSpanS="12"
+					adjustLabelSpan="false"
+					emptySpanXL="4"
+					emptySpanL="4"
+					emptySpanM="4"
+					emptySpanS="0"
+					columnsXL="1"
+					columnsL="1"
+					columnsM="1"
+					singleContainerFullSize="false" >
+					<f:content>
+						<Label text="Employee Id" />
+						<Input id="name" value="{oCreateEmpModel>/EMP_ID}" />						
+						<Label text="Name" />
+						<Input value="{oCreateEmpModel>/FIRST_NAME}" placeholder="Fisrt Name">
+							<layoutData>
+								<l:GridData span="XL1 L2 M2 S4" />
+							</layoutData>
+						</Input>
+						<Input value="{oCreateEmpModel>/MIDDLE_NAME}" placeholder="Middle Name"/>
+						<Input value="{oCreateEmpModel>/LAST_NAME}" placeholder="Last Name"/>
+						<Label text="Phone No." />
+						<Input value="{oCreateEmpModel>/PHONE}" />
+						<Label text="Email" />
+						<Input value="{oCreateEmpModel>/EMAIL}" />
+						<Label text="Date Of Birth" />
+						<DatePicker value="{oCreateEmpModel>/DATEOFBIRTH}" valueFormat="yyyy-MM-dd" />
+						<Label text="Department" />
+						<Select items="{/Departments}" selectedKey="{oCreateEmpModel>/DEPT_ID}">
+							<items>
+								<core:Item text="{DEPT_NAME}" key="{DEPT_ID}"/>
+							</items>
+						</Select>
+						<Label text="Salary" />
+						<Input value="{oCreateEmpModel>/CURRENCY}" maxLength="3">
+						</Input>
+						<Input value="{oCreateEmpModel>/SALARY}">
+							<layoutData>
+								<l:GridData span="XL1 L2 M2 S4" />
+							</layoutData>
+						</Input>
+						<Label text="Projects" />
+						<MultiComboBox items="{/Projects}" selectedKeys="{oCreateEmpModel>/SEL_PROJECTS}">
+							<core:Item text="{PROJECT_Name}" key="{PROJECT_ID}" />
+						</MultiComboBox>
+						<Label text="Technolgies" />
+						<MultiComboBox items="{/Technologies}" selectedKeys="{oCreateEmpModel>/SEL_TECHNOLOGIES}">
+							<core:Item text="{TECH_NAME}" key="{TECH_ID}" />
+						</MultiComboBox>
+						<!-- <Label text="Address" required="true"/>
+						<MultiInput showValueHelp="true" required="true" value="{oCreateEmpModel>/ADDRESS}" change="onAddressChange"/> -->
+					</f:content>					
+				</f:SimpleForm>
+
+				<Table id="AddEmpTable" items="{path: 'oCreateEmpModel>/Address', parameters: {$count: true}}"
+					updateFinished="handleAddressTableUpdateFinished" selectionChange="onAddTabSelChange"
+					mode="MultiSelect">
+					<headerToolbar>
+						<OverflowToolbar >
+							<Title id="empAddressTableTitle" text="Employee Address" />
+							<ToolbarSpacer />
+							<Button text="Create" icon="sap-icon://add" press="onEmpAddressCreate" />
+							 <Button icon="sap-icon://delete" enabled="{oScreenMode>/deleteEnabledAddress}" press="onDeleteAddress" tooltip="Delete Item(s)" />
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column >
+							<Text text="Address Id"></Text>
+						</Column>
+						<Column >
+							<Text text="Country"></Text>
+						</Column>
+						<Column >
+							<Text text="State"></Text>
+						</Column>
+						<Column >
+							<Text text="Address Type"></Text>
+						</Column>
+						<Column >
+							<Text text="Region"></Text>
+						</Column>
+						<Column >
+							<Text text="Locality"></Text>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem type="Navigation">
+							<cells>
+								<Text text="{oCreateEmpModel>ADDRESS_ID}" />
+								<Text text="{oCreateEmpModel>COUNTRY_NAME}" />
+								<Text text="{oCreateEmpModel>STATE_NAME}" />
+								<Text text="{oCreateEmpModel>ADD_TYPE}" />
+								<Text text="{oCreateEmpModel>REGION}" />
+								<Text text="{oCreateEmpModel>LOCATION_DETAILS}" />
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</VBox>
+        </content>
+		<footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button text="Cancel" press="onCancelPress" type="Reject" />
+				<Button text="Save" press="onSaveEmp" type="Accept" />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>

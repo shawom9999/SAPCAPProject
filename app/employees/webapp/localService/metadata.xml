@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="CatalogService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Departments" EntityType="CatalogService.Departments"/>
+                <EntitySet Name="Projects" EntityType="CatalogService.Projects"/>
+                <EntitySet Name="Technologies" EntityType="CatalogService.Technologies"/>
+                <EntitySet Name="Countries" EntityType="CatalogService.Countries"/>
+                <EntitySet Name="States" EntityType="CatalogService.States"/>
+                <EntitySet Name="Employees" EntityType="CatalogService.Employees">
+                    <NavigationPropertyBinding Path="LINK_TO_EMP_DEPT" Target="EmpDept"/>
+                    <NavigationPropertyBinding Path="LINK_TO_EMP_ADD" Target="EmpAddress"/>
+                    <NavigationPropertyBinding Path="LINK_TO_EMP_TECH" Target="EmpTechnology"/>
+                    <NavigationPropertyBinding Path="LINK_TO_EMP_PROJ" Target="EmpProjects"/>
+                </EntitySet>
+                <EntitySet Name="EmpDept" EntityType="CatalogService.EmpDept">
+                    <NavigationPropertyBinding Path="EMP" Target="Employees"/>
+                    <NavigationPropertyBinding Path="LINK_TO_DEPARTMENT" Target="Departments"/>
+                </EntitySet>
+                <EntitySet Name="EmpTechnology" EntityType="CatalogService.EmpTechnology">
+                    <NavigationPropertyBinding Path="LINK_TO_TECHNOLOGIES" Target="Technologies"/>
+                </EntitySet>
+                <EntitySet Name="EmpProjects" EntityType="CatalogService.EmpProjects">
+                    <NavigationPropertyBinding Path="LINK_TO_PROJECTS" Target="Projects"/>
+                    <NavigationPropertyBinding Path="LINK_TO_TECHNOLOGIES" Target="Technologies"/>
+                </EntitySet>
+                <EntitySet Name="EmpAddress" EntityType="CatalogService.EmpAddress">
+                    <NavigationPropertyBinding Path="EMP" Target="Employees"/>
+                    <NavigationPropertyBinding Path="LINK_TO_ADDRESS" Target="Address"/>
+                </EntitySet>
+                <EntitySet Name="Address" EntityType="CatalogService.Address">
+                    <NavigationPropertyBinding Path="ADDRESS" Target="EmpAddress"/>
+                    <NavigationPropertyBinding Path="LINK_TO_COUNTRY" Target="Countries"/>
+                    <NavigationPropertyBinding Path="LINK_TO_STATE" Target="States"/>
+                    <NavigationPropertyBinding Path="LINK_TO_ADD_TYPE" Target="AddressType"/>
+                </EntitySet>
+                <EntitySet Name="AddressType" EntityType="CatalogService.AddressType"/>
+            </EntityContainer>
+            <EntityType Name="Departments">
+                <Key>
+                    <PropertyRef Name="DEPT_ID"/>
+                </Key>
+                <Property Name="DEPT_ID" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="DEPT_NAME" Type="Edm.String"/>
+                <Property Name="MANAGER_ID" Type="Edm.Int64"/>
+            </EntityType>
+            <EntityType Name="Projects">
+                <Key>
+                    <PropertyRef Name="PROJECT_ID"/>
+                </Key>
+                <Property Name="PROJECT_ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="PROJECT_Name" Type="Edm.String" MaxLength="100"/>
+                <Property Name="CLIENT_NAME" Type="Edm.String" MaxLength="100"/>
+                <Property Name="CLIENT_LOCATION" Type="Edm.String" MaxLength="256"/>
+                <Property Name="PROJECT_TYPE_ID" Type="Edm.String" MaxLength="32"/>
+                <Property Name="PROJECT_IMPL_ID" Type="Edm.String" MaxLength="100"/>
+            </EntityType>
+            <EntityType Name="Technologies">
+                <Key>
+                    <PropertyRef Name="TECH_ID"/>
+                </Key>
+                <Property Name="TECH_ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="TECH_NAME" Type="Edm.String" MaxLength="100"/>
+            </EntityType>
+            <EntityType Name="Countries">
+                <Key>
+                    <PropertyRef Name="COUNTRY_ID"/>
+                </Key>
+                <Property Name="COUNTRY_ID" Type="Edm.String" MaxLength="3" Nullable="false"/>
+                <Property Name="COUNTRY_NAME" Type="Edm.String" MaxLength="100"/>
+            </EntityType>
+            <EntityType Name="States">
+                <Key>
+                    <PropertyRef Name="COUNTRY_ID"/>
+                    <PropertyRef Name="STATE_ID"/>
+                </Key>
+                <Property Name="COUNTRY_ID" Type="Edm.String" MaxLength="3" Nullable="false"/>
+                <Property Name="STATE_ID" Type="Edm.String" MaxLength="36" Nullable="false"/>
+                <Property Name="STATE_NAME" Type="Edm.String" MaxLength="100"/>
+            </EntityType>
+            <EntityType Name="Employees">
+                <Key>
+                    <PropertyRef Name="EMP_ID"/>
+                </Key>
+                <Property Name="EMP_ID" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="FIRST_NAME" Type="Edm.String" MaxLength="32"/>
+                <Property Name="MIDDLE_NAME" Type="Edm.String" MaxLength="32"/>
+                <Property Name="LAST_NAME" Type="Edm.String" MaxLength="32"/>
+                <Property Name="PHONE" Type="Edm.Int64"/>
+                <Property Name="EMAIL" Type="Edm.String" MaxLength="100"/>
+                <Property Name="DATEOFBIRTH" Type="Edm.Date"/>
+                <Property Name="DEPT_ID" Type="Edm.Int64"/>
+                <Property Name="SALARY" Type="Edm.Int64"/>
+                <Property Name="CURRENCY" Type="Edm.String" MaxLength="3"/>
+                <NavigationProperty Name="LINK_TO_EMP_DEPT" Type="Collection(CatalogService.EmpDept)" Partner="EMP">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="LINK_TO_EMP_ADD" Type="Collection(CatalogService.EmpAddress)" Partner="EMP">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="LINK_TO_EMP_TECH" Type="Collection(CatalogService.EmpTechnology)"/>
+                <NavigationProperty Name="LINK_TO_EMP_PROJ" Type="Collection(CatalogService.EmpProjects)"/>
+            </EntityType>
+            <EntityType Name="EmpDept">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="DEPT_ID" Type="Edm.Int64"/>
+                <NavigationProperty Name="EMP" Type="CatalogService.Employees" Partner="LINK_TO_EMP_DEPT">
+                    <ReferentialConstraint Property="EMP_EMP_ID" ReferencedProperty="EMP_ID"/>
+                </NavigationProperty>
+                <Property Name="EMP_EMP_ID" Type="Edm.Int64"/>
+                <NavigationProperty Name="LINK_TO_DEPARTMENT" Type="CatalogService.Departments" Nullable="false">
+                    <ReferentialConstraint Property="DEPT_ID" ReferencedProperty="DEPT_ID"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="EmpTechnology">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="EMP_ID" Type="Edm.Int64"/>
+                <Property Name="TECH_ID" Type="Edm.Guid"/>
+                <NavigationProperty Name="LINK_TO_TECHNOLOGIES" Type="CatalogService.Technologies" Nullable="false">
+                    <ReferentialConstraint Property="TECH_ID" ReferencedProperty="TECH_ID"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="EmpProjects">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="EMP_ID" Type="Edm.Int64"/>
+                <Property Name="PROJECT_ID" Type="Edm.Guid"/>
+                <Property Name="TECH_ID" Type="Edm.Guid"/>
+                <NavigationProperty Name="LINK_TO_PROJECTS" Type="CatalogService.Projects" Nullable="false">
+                    <ReferentialConstraint Property="PROJECT_ID" ReferencedProperty="PROJECT_ID"/>
+                </NavigationProperty>
+                <NavigationProperty Name="LINK_TO_TECHNOLOGIES" Type="CatalogService.Technologies" Nullable="false">
+                    <ReferentialConstraint Property="TECH_ID" ReferencedProperty="TECH_ID"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="EmpAddress">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <NavigationProperty Name="EMP" Type="CatalogService.Employees" Partner="LINK_TO_EMP_ADD">
+                    <ReferentialConstraint Property="EMP_EMP_ID" ReferencedProperty="EMP_ID"/>
+                </NavigationProperty>
+                <Property Name="EMP_EMP_ID" Type="Edm.Int64"/>
+                <Property Name="ADDRESS_ID" Type="Edm.Int64"/>
+                <NavigationProperty Name="LINK_TO_ADDRESS" Type="Collection(CatalogService.Address)" Partner="ADDRESS">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Address">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <NavigationProperty Name="ADDRESS" Type="CatalogService.EmpAddress" Partner="LINK_TO_ADDRESS">
+                    <ReferentialConstraint Property="ADDRESS_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="ADDRESS_ID" Type="Edm.Guid"/>
+                <Property Name="COUNTRY_ID" Type="Edm.String" MaxLength="3"/>
+                <Property Name="STATE_ID" Type="Edm.String" MaxLength="36"/>
+                <Property Name="REGION" Type="Edm.String" MaxLength="100"/>
+                <Property Name="LOCATION_DETAILS" Type="Edm.String" MaxLength="256"/>
+                <Property Name="ADD_TYPE_ID" Type="Edm.Guid"/>
+                <NavigationProperty Name="LINK_TO_COUNTRY" Type="CatalogService.Countries" Nullable="false">
+                    <ReferentialConstraint Property="COUNTRY_ID" ReferencedProperty="COUNTRY_ID"/>
+                </NavigationProperty>
+                <NavigationProperty Name="LINK_TO_STATE" Type="CatalogService.States" Nullable="false">
+                    <ReferentialConstraint Property="STATE_ID" ReferencedProperty="STATE_ID"/>
+                </NavigationProperty>
+                <NavigationProperty Name="LINK_TO_ADD_TYPE" Type="CatalogService.AddressType" Nullable="false">
+                    <ReferentialConstraint Property="ADD_TYPE_ID" ReferencedProperty="ADD_TYPE_ID"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="AddressType">
+                <Key>
+                    <PropertyRef Name="ADD_TYPE_ID"/>
+                </Key>
+                <Property Name="ADD_TYPE_ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="ADD_TYPE" Type="Edm.String" MaxLength="36"/>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

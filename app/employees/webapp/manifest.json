@@ -1,0 +1,181 @@
+{
+    "_version": "1.49.0",
+    "sap.app": {
+        "id": "employees",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:basic",
+            "version": "1.10.1",
+            "toolsId": "2903fcff-d783-4fc0-89d2-51c34780d0b0"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/catalog/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "4.0"
+                }
+            }
+        },
+        "crossNavigation": {
+            "inbounds": {
+                "employees-inbound": {
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    },
+                    "semanticObject": "manageemployees",
+                    "action": "display",
+                    "title": "{{flpTitle}}",
+                    "subTitle": "{{flpSubtitle}}",
+                    "icon": ""
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.115.1",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.f": {},
+                "sap.suite.ui.generic.template": {},
+                "sap.ui.comp": {},
+                "sap.ui.generic.app": {},
+                "sap.ui.table": {},
+                "sap.ushell": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "employees.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "async": true,
+                "viewPath": "employees.view",
+                "controlAggregation": "pages",
+                "controlId": "app",
+                "clearControlAggregation": false
+            },
+            "routes": [
+                {
+                    "name": "RouteMaster",
+                    "pattern": ":?query:",
+                    "target": [
+                        "TargetMaster", "EmpMaster"
+                    ]
+                },
+                {
+                    "name": "RouteEmployeeData",
+                    "pattern": "employee/{deptId}",
+                    "target": [
+                        "TargetMaster", "EmpMaster"
+                    ]
+                },
+                {
+                    "name": "RouteNewEmpCreation",
+                    "pattern": "createEmployee",
+                    "target": [
+                        "TargetMaster", "CreateNewEmp"
+                    ]
+                },
+                {
+                    "name": "RouteEmpDetail",
+                    "pattern": "EmpDetail/{empId}",
+                    "target": [
+                        "TargetMaster", "EmpDetail"
+                    ]
+                }
+            ],
+            "targets": {
+                "TargetMaster": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "controlAggregation": "masterPages",
+                    "viewId": "Master",
+                    "viewName": "Master"
+                },
+                "EmpMaster": {
+                    "viewType": "XML",
+                    "controlAggregation": "detailPages",
+                    "viewId": "EmpMaster",
+                    "viewName": "EmpMaster"
+                },
+                "CreateNewEmp": {
+                    "viewType": "XML",
+                    "controlAggregation": "detailPages",
+                    "viewId": "CreateNewEmp",
+                    "viewName": "CreateNewEmp"
+                },
+                "EmpDetail": {
+                    "viewType": "XML",
+                    "controlAggregation": "detailPages",
+                    "viewId": "EmpDetail",
+                    "viewName": "EmpDetail"
+                }
+            }
+        },
+        "rootView": {
+            "viewName": "employees.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "App"
+        }
+    }
+}
