@@ -266,7 +266,7 @@ sap.ui.define([
                     $$updateGroupId: 'associationsGroup'
                 });
 
-                oCreateEmpModelData.SEL_PROJECTS.forEach(oItem => {
+                oCreateEmpModelData.SEL_TECHNOLOGIES.forEach(oItem => {
                     oTechBinding.create({
                         EMP_ID: empId,
                         TECH_ID: oItem
