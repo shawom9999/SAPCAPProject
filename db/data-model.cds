@@ -43,18 +43,18 @@ entity EMPLOYEES {
       SALARY        : Integer64;
       CURRENCY      : String(3);
       // LINK_TO_EMP_DEPT : Composition of many EMP_DEPT on LINK_TO_EMP_DEPT.EMP = $self;
-      LINK_TO_EMP_ADD  : Composition of many EMP_ADDRESS on LINK_TO_EMP_ADD.EMP = $self;
+      LINK_TO_EMP_ADD  : Composition of many ADDRESS on LINK_TO_EMP_ADD.EMP = $self;
       LINK_TO_EMP_TECH : Association[1.. *] to EMP_TECH on LINK_TO_EMP_TECH.EMP_ID = EMP_ID;
       LINK_TO_EMP_PROJ : Association[1.. *] to EMP_PROJ on LINK_TO_EMP_PROJ.EMP_ID = EMP_ID;
       LINK_TO_DEPARTMENT : Association[1..1] to DEPARTMENTS on LINK_TO_DEPARTMENT.DEPT_ID = DEPT_ID;
 }
 
-entity EMP_DEPT {
-  key ID            : UUID;      
-      DEPT_ID       : Integer64;
-      EMP           : Association to EMPLOYEES;
-      LINK_TO_DEPARTMENT : Association[1..1] to DEPARTMENTS on LINK_TO_DEPARTMENT.DEPT_ID = DEPT_ID;
-}
+// entity EMP_DEPT {
+//   key ID            : UUID;      
+//       DEPT_ID       : Integer64;
+//       EMP           : Association to EMPLOYEES;
+//       LINK_TO_DEPARTMENT : Association[1..1] to DEPARTMENTS on LINK_TO_DEPARTMENT.DEPT_ID = DEPT_ID;
+// }
 
 entity EMP_TECH {
   key ID      : UUID;
@@ -72,16 +72,17 @@ entity EMP_PROJ {
       LINK_TO_TECHNOLOGIES : Association[1..1] to TECHNOLOGIES on LINK_TO_TECHNOLOGIES.TECH_ID = TECH_ID;
 }
 
-entity EMP_ADDRESS {
-  key ID          : UUID;
-      EMP         : Association to EMPLOYEES;
-      ADDRESS_ID  : Integer64;
-      LINK_TO_ADDRESS : Composition of many ADDRESS on LINK_TO_ADDRESS.ADDRESS = $self;
-}
+// entity EMP_ADDRESS {
+//   key ID          : UUID;
+//       EMP         : Association to EMPLOYEES;
+//       ADDRESS_ID  : Integer64;
+//       LINK_TO_ADDRESS : Composition of many ADDRESS on LINK_TO_ADDRESS.ADDRESS = $self;
+// }
 
 entity ADDRESS {
   key ID                : UUID;
-      ADDRESS           : Association to EMP_ADDRESS;
+      // ADDRESS           : Association to EMP_ADDRESS;
+      EMP               : Association to EMPLOYEES;
       COUNTRY_ID        : String(3);
       STATE_ID          : String(36);
       REGION            : String(100);

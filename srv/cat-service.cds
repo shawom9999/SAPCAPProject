@@ -11,16 +11,17 @@ service CatalogService {
 
     entity Employees as projection on db.EMPLOYEES {
         *,
-        LINK_TO_EMP_DEPT : redirected to EmpDept,
-        LINK_TO_EMP_ADD  : redirected to EmpAddress,
+        // LINK_TO_EMP_DEPT : redirected to EmpDept,
+        // LINK_TO_EMP_ADD  : redirected to EmpAddress,
         LINK_TO_EMP_TECH : redirected to EmpTechnology,
-        LINK_TO_EMP_PROJ : redirected to EmpProjects
-    };
-
-    entity EmpDept as projection on db.EMP_DEPT{
-        *,
+        LINK_TO_EMP_PROJ : redirected to EmpProjects,
         LINK_TO_DEPARTMENT : redirected to Departments
     };
+
+    // entity EmpDept as projection on db.EMP_DEPT{
+    //     *,
+    //     LINK_TO_DEPARTMENT : redirected to Departments
+    // };
 
     entity EmpTechnology as projection on db.EMP_TECH {
         *,
@@ -33,10 +34,10 @@ service CatalogService {
         LINK_TO_TECHNOLOGIES : redirected to Technologies
     };
 
-    entity EmpAddress as projection on db.EMP_ADDRESS {
-        *,
-        LINK_TO_ADDRESS : redirected to Address
-    };   
+    // entity EmpAddress as projection on db.EMP_ADDRESS {
+    //     *,
+    //     LINK_TO_ADDRESS : redirected to Address
+    // };   
 
     entity Address as projection on db.ADDRESS {
         *,

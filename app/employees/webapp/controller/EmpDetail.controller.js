@@ -36,7 +36,6 @@ sap.ui.define([
                 return new Promise((resolve, reject) => {
                     this.getView().bindElement({
                         path: "/Employees(" + empId + ")",
-                        model: "catalogModel",
                         parameters: {
                             $expand: {
                                 "LINK_TO_DEPARTMENT": {},
@@ -50,11 +49,9 @@ sap.ui.define([
                                 },
                                 "LINK_TO_EMP_PROJ": {
                                     $expand: {
-                                        "LINK_TO_COUNTRIES": {
-                                            $select: "REGION_CODE"
-                                        }
+                                        "LINK_TO_PROJECTS": {}
                                     },
-                                    $select: "CODE"
+                                    $select: "PROJECT_ID,PROJECT_NAME"
                                 },
                                 "LINK_TO_EMP_TECH": {
                                     $select: "ID,EMP_ID,TECH_ID",

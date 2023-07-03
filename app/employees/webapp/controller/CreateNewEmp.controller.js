@@ -186,28 +186,28 @@ sap.ui.define([
             },
 
             onSaveEmp: function () {
-            var oView = this.getView(),
-                oController = this,
-                oCreateEmpModel = oController.getView().getModel("oCreateEmpModel");
-            this.oGlobalBusyDialog.open();
-            sap.ui.getCore().getMessageManager().removeAllMessages();
-            var oBinding = oView.getModel('catalogModel').bindList(
-                "/StatementReplies",
-                undefined,
-                undefined,
-                undefined, {
-                $$updateGroupId: 'empGroup'
-            });
+                var oView = this.getView(),
+                    oController = this,
+                    oCreateEmpModel = oController.getView().getModel("oCreateEmpModel");
+                this.oGlobalBusyDialog.open();
+                sap.ui.getCore().getMessageManager().removeAllMessages();
+                var oBinding = oView.getModel('catalogModel').bindList(
+                    "/StatementReplies",
+                    undefined,
+                    undefined,
+                    undefined, {
+                    $$updateGroupId: 'empGroup'
+                });
 
-            var oContext = oBinding.create(oCreateEmpModel.getData());
+                var oContext = oBinding.create(oCreateEmpModel.getData());
 
-            oView.getModel("catalogModel").submitBatch("empGroup").then(function () {
-                MessageBox.Success(`Employee ${oCreateEmpModel.getProperty("/EMP_ID")} \n created successfully`);
-                    
-            }).catch(function (err) {
-                oController.oGlobalBusyDialog.close();
-                MessageBox.error(err.toString());
-            }); 
+                oView.getModel("catalogModel").submitBatch("empGroup").then(function () {
+                    MessageBox.Success(`Employee ${oCreateEmpModel.getProperty("/EMP_ID")} \n created successfully`);
+                        
+                }).catch(function (err) {
+                    oController.oGlobalBusyDialog.close();
+                    MessageBox.error(err.toString());
+                }); 
             }
             
         });
