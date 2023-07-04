@@ -8,7 +8,7 @@ module.exports = (srv => {
     srv.on("updateSelectedProjects", "Employees", async (req) => {
         try {
             const empId = req.params[0].EMP_ID;
-            let aProjId = this.req.data.selectedProjects;
+            let aProjId = req.data.selectedProjects;
 
             await cds.run(`DELETE from DB_EMP_PROJ where EMP_ID = ?`, [empId]).catch((error) => {
                 throw error;
@@ -20,6 +20,15 @@ module.exports = (srv => {
                 });
             }
 
+            // await runTransactionQuery(req);
+            // req.reply(req.data);
+        } catch (err) {
+            throw err;
+        }
+    });
+
+    srv.on("UPDATE", "Employees", async (req) => {
+        try {
             await runTransactionQuery(req);
             req.reply(req.data);
         } catch (err) {
@@ -30,7 +39,7 @@ module.exports = (srv => {
     srv.on("updateSelectedTechnologies", "Employees", async (req) => {
         try {
             const empId = req.params[0].EMP_ID;
-            let aSelTech = this.req.data.selectedTechnolgies;
+            let aSelTech = req.data.selectedTechnolgies;
 
             await cds.run(`DELETE from DB_EMP_TECH where EMP_ID = ?`, [empId]).catch((error) => {
                 throw error;
@@ -42,8 +51,8 @@ module.exports = (srv => {
                 });
             }
 
-            await runTransactionQuery(req);
-            req.reply(req.data);
+            // await runTransactionQuery(req);
+            // req.reply(req.data);
         } catch (err) {
             throw err;
         }
@@ -52,7 +61,7 @@ module.exports = (srv => {
     srv.on("updateAddress", "Employees", async (req) => {
         try {
             const empId = req.params[0].EMP_ID;
-            let aAddress = this.req.data.aAddress;
+            let aAddress = req.data.aAddress;
 
             await cds.run(`DELETE from DB_ADDRESS where EMP_EMP_ID = ?`, [empId]).catch((error) => {
                 throw error;
@@ -64,8 +73,8 @@ module.exports = (srv => {
                 });
             }
 
-            await runTransactionQuery(req);
-            req.reply(req.data);
+            // await runTransactionQuery(req);
+            // req.reply(req.data);
         } catch (err) {
             throw err;
         }
