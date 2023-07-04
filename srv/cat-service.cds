@@ -1,6 +1,6 @@
 using db from '../db/data-model';
 
-service CatalogService {
+service CatalogService @(requires : 'authenticated-user'){
     
     entity Departments as projection on db.DEPARTMENTS;
     entity Projects as projection on db.PROJECTS;

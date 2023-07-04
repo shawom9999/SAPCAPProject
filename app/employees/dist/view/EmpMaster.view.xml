@@ -1,0 +1,50 @@
+<mvc:View controllerName="employees.controller.EmpMaster"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+    <Page id="page" title="Employees">
+        <content>
+            <Table id="deptEmpTable" items="{path: '/Employees', parameters: {$count: true}}"
+                updateFinished="handleEmpTableUpdateFinished" itemPress="navigateToEmpDetail">
+                <headerToolbar>
+                    <OverflowToolbar >
+                        <Title id="deptEmpTableTitle" text="List Of Employees" />
+                        <ToolbarSpacer />
+                        <Button text="Create" icon="sap-icon://add" press="onEmpCreate"></Button>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column >
+                        <Text text="Employee Id"></Text>
+                    </Column>
+                    <Column >
+                        <Text text="Name"></Text>
+                    </Column>
+                    <Column >
+                        <Text text="Email"></Text>
+                    </Column>
+                    <Column >
+                        <Text text="Contact"></Text>
+                    </Column>
+                    <Column >
+                        <Text text="DOB"></Text>
+                    </Column>
+                    <Column >
+                        <Text text="Salary"></Text>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem type="Navigation">
+                        <cells>
+                            <Text text="{EMP_ID}" />
+                            <Text text="{FIRST_NAME} {MIDDLE_NAME} {LAST_NAME}" />
+                            <Text text="{EMAIL}" />
+                            <Text text="{PHONE}" />
+                            <Text text="{DATEOFBIRTH}" />
+                            <Text text="{CURRENCY} {SALARY}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>
