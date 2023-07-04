@@ -5,6 +5,17 @@ module.exports = (srv => {
         ADDRESS
     } = cds.entities('db');
 
+    srv.on("CREATE", "Employees", async (req) => {
+        try {
+            let query = await cds.run(`SELECT MAX(EMP_ID) from DB_EMPLOYEES`);
+            req.data.EMP_ID = query[0]["MAX(EMP_ID)"] + 1;
+            await cds.transaction(req).run(req.query);
+            req.reply(req.data);
+        } catch (err) {
+            throw err;
+        }
+    });
+
     srv.on("updateSelectedProjects", "Employees", async (req) => {
         try {
             const empId = req.params[0].EMP_ID;
@@ -19,9 +30,7 @@ module.exports = (srv => {
                     throw error;
                 });
             }
-
-            // await runTransactionQuery(req);
-            // req.reply(req.data);
+            
         } catch (err) {
             throw err;
         }
@@ -29,7 +38,7 @@ module.exports = (srv => {
 
     srv.on("UPDATE", "Employees", async (req) => {
         try {
-            await runTransactionQuery(req);
+            await cds.transaction(req).run(req.query);
             req.reply(req.data);
         } catch (err) {
             throw err;
@@ -50,9 +59,6 @@ module.exports = (srv => {
                     throw error;
                 });
             }
-
-            // await runTransactionQuery(req);
-            // req.reply(req.data);
         } catch (err) {
             throw err;
         }
@@ -72,9 +78,6 @@ module.exports = (srv => {
                     throw error;
                 });
             }
-
-            // await runTransactionQuery(req);
-            // req.reply(req.data);
         } catch (err) {
             throw err;
         }

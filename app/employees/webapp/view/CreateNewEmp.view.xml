@@ -22,8 +22,8 @@
 					columnsM="1"
 					singleContainerFullSize="false" >
 					<f:content>
-						<Label text="Employee Id" />
-						<Input id="name" value="{oCreateEmpModel>/EMP_ID}" />						
+						<!-- <Label text="Employee Id" />
+						<Input id="name" value="{oCreateEmpModel>/EMP_ID}" />						 -->
 						<Label text="Name" />
 						<Input value="{oCreateEmpModel>/FIRST_NAME}" placeholder="Fisrt Name">
 							<layoutData>

@@ -30,7 +30,7 @@ sap.ui.define([
 
             _createEmpModel: function () {
                 return new JSONModel ({
-                    "EMP_ID": null,
+                    // "EMP_ID": null,
                     "FIRST_NAME": "",
                     "MIDDLE_NAME": "",
                     "LAST_NAME": "",
@@ -194,18 +194,20 @@ sap.ui.define([
                 this.oGlobalBusyDialog.open();
                 sap.ui.getCore().getMessageManager().removeAllMessages();
 
-                oCreateEmpModelData.Address.forEach(oItem => {
-                    aAddObject.push({
-                        COUNTRY_ID: oItem.COUNTRY_ID,
-                        STATE_ID: oItem.STATE_ID,
-                        REGION: oItem.REGION,
-                        LOCATION_DETAILS: oItem.LOCATION_DETAILS,
-                        ADD_TYPE_ID: oItem.ADD_TYPE_ID
+                if (oCreateEmpModelData.Address.length > 0) {
+                    oCreateEmpModelData.Address.forEach(oItem => {
+                        aAddObject.push({
+                            COUNTRY_ID: oItem.COUNTRY_ID,
+                            STATE_ID: oItem.STATE_ID,
+                            REGION: oItem.REGION,
+                            LOCATION_DETAILS: oItem.LOCATION_DETAILS,
+                            ADD_TYPE_ID: oItem.ADD_TYPE_ID
+                        });
                     });
-                });
+                }
 
                 let oEmpObject = {
-                    EMP_ID: parseInt(oCreateEmpModelData.EMP_ID),
+                    // EMP_ID: parseInt(oCreateEmpModelData.EMP_ID),
                     FIRST_NAME: oCreateEmpModelData.FIRST_NAME,
                     MIDDLE_NAME: oCreateEmpModelData.MIDDLE_NAME,
                     LAST_NAME: oCreateEmpModelData.LAST_NAME,
@@ -226,9 +228,11 @@ sap.ui.define([
                     $$updateGroupId: 'empGroup'
                 });
 
-                oBinding.create(oEmpObject);
+               var oContext = oBinding.create(oEmpObject);
 
                 oView.getModel().submitBatch("empGroup").then(function () {
+                    let oObject = oContext.getObject();
+                    oCreateEmpModel.setProperty("/EMP_ID", oObject.EMP_ID);
                     oController._saveAssociations();   
                 }).catch(function (err) {
                     oController.oGlobalBusyDialog.close();
@@ -241,7 +245,8 @@ sap.ui.define([
                     oController = this,
                     oCreateEmpModel = oView.getModel("oCreateEmpModel"),
                     oCreateEmpModelData = oCreateEmpModel.getData(),
-                    empId = parseInt(oCreateEmpModelData.EMP_ID);
+                    empId = oCreateEmpModelData.EMP_ID,
+                    empId = typeof(empId) === 'string' ? parseInt(empId) : empId;
 
                 let oProjBinding = oView.getModel().bindList(
                     "/EmpProjects",
