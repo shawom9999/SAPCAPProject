@@ -7,7 +7,9 @@ modules:
   type: nodejs
   path: gen/srv
   requires:
-  - name: manageemployee-db
+  - name: omkar-hdi-dev
+  - name: uaa_manageemployee
+  - name: manageemployee-destination-service
   provides:
   - name: srv-api
     properties:
@@ -20,7 +22,7 @@ modules:
   type: hdb
   path: gen/db
   requires:
-  - name: manageemployee-db
+  - name: omkar-hdi-dev
   parameters:
     buildpack: nodejs_buildpack
 - name: manageemployee-app-content
@@ -47,8 +49,38 @@ modules:
     - npm install
     - npm run build:cf
     supported-platforms: []
+- name: manageemployee-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: manageemployee-destination-service
+    parameters:
+      content-target: true
+  - name: manageemployee-repo-host
+    parameters:
+      service-key:
+        name: manageemployee-repo-host-key
+  - name: uaa_manageemployee
+    parameters:
+      service-key:
+        name: uaa_manageemployee-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: manageemp_manageemployee_repo_host
+          ServiceInstanceName: manageemployee-html5-srv
+          ServiceKeyName: manageemployee-repo-host-key
+          sap.cloud.service: manageemp
+        - Authentication: OAuth2UserTokenExchange
+          Name: manageemp_uaa_manageemployee
+          ServiceInstanceName: manageemployee-xsuaa-service
+          ServiceKeyName: uaa_manageemployee-key
+          sap.cloud.service: manageemp
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
 resources:
-- name: manageemployee-db
+- name: omkar-hdi-dev
   type: com.sap.xs.hdi-container
   parameters:
     service: hana
@@ -63,20 +95,18 @@ resources:
   type: org.cloudfoundry.managed-service
   parameters:
     config:
-      HTML5Runtime_enabled: false
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
+      HTML5Runtime_enabled: true
       version: 1.0.0
     service: destination
     service-name: manageemployee-destination-service
     service-plan: lite
+- name: uaa_manageemployee
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: manageemployee-xsuaa-service
+    service-plan: application
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true

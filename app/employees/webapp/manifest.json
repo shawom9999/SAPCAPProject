@@ -180,6 +180,6 @@
     },
     "sap.cloud": {
         "public": true,
-        "service": "manageemployee"
+        "service": "manageemp"
     }
 }
