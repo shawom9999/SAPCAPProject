@@ -21,22 +21,36 @@ sap.ui.define([
             _onRouteMatched: function (oEvent) {                
                 this.oGlobalBusyDialog.open();
                 let empId = oEvent.getParameter("arguments").empId;
+                this._empId = typeof(empId) === 'string' ? parseInt(empId) : empId;
                 this.getView().getParent().getParent().setMode("HideMode");
 
                 this.getView().setModel(new JSONModel({
                     "deleteEnabledAddress": false
                 }), "oScreenMode");
 
-                if (empId) {
-                    this.handleViewBinding(empId).then(() => {
+                if (this._empId) {
+                    this.handleViewBinding().then(() => {
                         let oContext = this.getView().getBindingContext(),
                             oObject = oContext.getObject(),
+                            aAddress = [],
                             aProjId = oObject.LINK_TO_EMP_PROJ.map(oItem => oItem.PROJECT_ID),
                             aTechId = oObject.LINK_TO_EMP_TECH.map(oItem => oItem.TECH_ID);
 
+                        oObject.LINK_TO_EMP_ADD.forEach(oItem => {
+                            aAddress.push({
+                                "COUNTRY_ID": oItem.LINK_TO_COUNTRY?.COUNTRY_ID,
+                                "COUNTRY_NAME": oItem.LINK_TO_COUNTRY?.COUNTRY_NAME,
+                                "STATE_ID": oItem.LINK_TO_STATE?.STATE_ID,
+                                "STATE_NAME": oItem.LINK_TO_STATE?.STATE_NAME,
+                                "REGION": oItem.REGION,
+                                "ADD_TYPE_ID": oItem.LINK_TO_ADD_TYPE?.ADD_TYPE_ID,
+                                "ADD_TYPE": oItem.LINK_TO_ADD_TYPE?.ADD_TYPE,
+                                "LOCATION_DETAILS": oItem.LOCATION_DETAILS  
+                            })
+                        });
                         this.oGlobalBusyDialog.close();
                         this.getView().setModel(new JSONModel({
-                            "Address": oObject.LINK_TO_EMP_ADD,
+                            "Address": aAddress,
                             "SEL_PROJECTS": aProjId,
                             "SEL_TECHNOLOGIES": aTechId
                         }), "oEmpDetailModel");
@@ -48,10 +62,10 @@ sap.ui.define([
              /**
              * Function for handling binding of the view
              */
-             handleViewBinding: function (empId) {
+             handleViewBinding: function () {
                 return new Promise((resolve, reject) => {
                     this.getView().bindElement({
-                        path: "/Employees(" + empId + ")",
+                        path: "/Employees(" + this._empId + ")",
                         parameters: {
                             $expand: {
                                 "LINK_TO_DEPARTMENT": {},
@@ -220,24 +234,26 @@ sap.ui.define([
 
             onSaveEmp: function () {
                 var oView = this.getView(),
-                    oController = this,
-                    oContext = oView.getBindingContext(),
-                    oEmpDetailModelData = oView.getModel("oEmpDetailModel").getData(),
-                    aAddObject = [];
+                    oController = this;
+                    // oContext = oView.getBindingContext(),
+                    // oEmpDetailModelData = oView.getModel("oEmpDetailModel").getData(),
+                    // aAddObject = [];
                 this.oGlobalBusyDialog.open();
                 sap.ui.getCore().getMessageManager().removeAllMessages();
 
-                oEmpDetailModelData.Address.forEach(oItem => {
-                    aAddObject.push({
-                        COUNTRY_ID: oItem.COUNTRY_ID,
-                        STATE_ID: oItem.STATE_ID,
-                        REGION: oItem.REGION,
-                        LOCATION_DETAILS: oItem.LOCATION_DETAILS,
-                        ADD_TYPE_ID: oItem.ADD_TYPE_ID
-                    });
-                });
+                // oEmpDetailModelData.Address.forEach(oItem => {
+                //     aAddObject.push({
+                //         COUNTRY_ID: oItem.COUNTRY_ID,
+                //         STATE_ID: oItem.STATE_ID,
+                //         REGION: oItem.REGION,
+                //         LOCATION_DETAILS: oItem.LOCATION_DETAILS,
+                //         ADD_TYPE_ID: oItem.ADD_TYPE_ID
+                //     });
+                // });
 
-                oContext.setProperty("LINK_TO_EMP_ADDRESS", aAddObject);
+                this._saveEmpProjects();
+                this._saveEmpTech();
+                this._saveEmpAddress();
 
                 oView.getModel().submitBatch("empGroup").then(function () {
                     oController.oGlobalBusyDialog.close();
@@ -251,7 +267,120 @@ sap.ui.define([
                     oController.oGlobalBusyDialog.close();
                     MessageBox.error(err.toString());
                 });
-            }
+            },
+
+            _saveEmpProjects: function () {
+                let oController = this,
+                    oView = oController.getView(),
+                    oContext = oView.getBindingContext(),
+                    oEmpDetailModelData = oView.getModel("oEmpDetailModel").getData(),
+                    aProjId = oEmpDetailModelData.SEL_PROJECTS,
+                    aSavedProjects = oContext.getObject().LINK_TO_EMP_PROJ.map(oType => oType.PROJECT_ID),
+                    bIsModified = false,
+                    aModProj = [];
+
+                //check if there were actual changes, only then update the Projects
+                //check if something was added
+                for (var oType of aProjId) {
+                    if (!aSavedProjects.includes(oType)) {
+                        bIsModified = true;
+                        break;
+                    }
+                }
+
+                //check if something was deleted
+                if (aSavedProjects.length !== aProjId.length) {
+                    bIsModified = true;
+                }
+
+                if (bIsModified) {
+                    aProjId.forEach(oItem => {
+                        aModProj.push({
+                            EMP_ID: oController._empId,
+                            PROJECT_ID: oItem
+                        });
+                    })
+                    var oUpdateAction = oView.getModel().bindContext("mainService.updateSelectedProjects(...)",
+                        oContext, {
+                        $$updateGroupId: "empGroup"
+                    });
+
+                    oUpdateAction.setParameter("selectedProjects", aModProj);
+
+                    oUpdateAction.execute("empGroup").catch(function (err) {
+                        console.log(err)
+                    });
+                }
+
+            },
+
+            _saveEmpTech: function () {
+                let oController = this,
+                    oView = oController.getView(),
+                    oContext = oView.getBindingContext(),
+                    oEmpDetailModelData = oView.getModel("oEmpDetailModel").getData(),
+                    aTech = oEmpDetailModelData.SEL_TECHNOLOGIES,
+                    aSavedTech = oContext.getObject().LINK_TO_EMP_TECH.map(oType => oType.TECH_ID),
+                    bIsModified = false,
+                    aModTech = [];
+
+                //check if there were actual changes, only then update the Projects
+                //check if something was added
+                for (var oType of aTech) {
+                    if (!aSavedTech.includes(oType)) {
+                        bIsModified = true;
+                        break;
+                    }
+                }
+
+                //check if something was deleted
+                if (aSavedTech.length !== aTech.length) {
+                    bIsModified = true;
+                }
+
+                if (bIsModified) {
+                    aTech.forEach(oItem => {
+                        aModTech.push({
+                            EMP_ID: oController._empId,
+                            TECH_ID: oItem
+                        });
+                    })
+                    var oUpdateAction = oView.getModel().bindContext("mainService.updateSelectedTechnologies(...)",
+                        oContext, {
+                        $$updateGroupId: "empGroup"
+                    });
+
+                    oUpdateAction.setParameter("selectedTechnolgies", aModTech);
+
+                    oUpdateAction.execute("empGroup").catch(function (err) {
+                        console.log(err)
+                    });
+                }
+
+            },
+
+            _saveEmpAddress: function () {
+                let oController = this,
+                    oView = oController.getView(),
+                    oContext = oView.getBindingContext(),
+                    oEmpDetailModelData = oView.getModel("oEmpDetailModel").getData(),
+                    aAddress = oEmpDetailModelData.Address;
+                
+                aAddress.forEach(oItem => {
+                    oItem.EMP_EMP_ID = oController._empId;
+                });
+                var oUpdateAction = oView.getModel().bindContext("mainService.updateAddress(...)",
+                    oContext, {
+                    $$updateGroupId: "empGroup"
+                });
+
+                oUpdateAction.setParameter("aAddress", aAddress);
+
+                oUpdateAction.execute("empGroup").catch(function (err) {
+                    console.log(err)
+                });
+
+            },
 
         // End   
 

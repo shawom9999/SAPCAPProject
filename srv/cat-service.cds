@@ -16,6 +16,24 @@ service CatalogService {
         LINK_TO_EMP_TECH : redirected to EmpTechnology,
         LINK_TO_EMP_PROJ : redirected to EmpProjects,
         LINK_TO_DEPARTMENT : redirected to Departments
+    } actions {
+        action updateSelectedProjects(selectedProjects : array of {
+            EMP_ID: Integer64;
+            PROJECT_ID: String(36)
+        });
+        action updateSelectedTechnologies(selectedTechnolgies : array of {
+            EMP_ID: Integer64;
+            TECH_ID: String(36)
+        });
+        action updateAddress(aAddress : array of {
+            EMP_EMP_ID        : Integer64;
+            COUNTRY_ID        : String(3);
+            STATE_ID          : String(36);
+            REGION            : String(100);
+            LOCATION_DETAILS  : String(256);
+            ADD_TYPE_ID       : String(36);
+        });
+
     };
 
     // entity EmpDept as projection on db.EMP_DEPT{

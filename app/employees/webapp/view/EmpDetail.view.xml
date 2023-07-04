@@ -98,9 +98,9 @@
 						<ColumnListItem type="Navigation">
 							<cells>
 								<Text text="{oEmpDetailModel>ADDRESS_ID}" />
-								<Text text="{oEmpDetailModel>LINK_TO_COUNTRY/COUNTRY_NAME}" />
-								<Text text="{oEmpDetailModel>LINK_TO_STATE/STATE_NAME}" />
-								<Text text="{oEmpDetailModel>LINK_TO_ADD_TYPE/ADD_TYPE}" />
+								<Text text="{oEmpDetailModel>COUNTRY_NAME}" />
+								<Text text="{oEmpDetailModel>STATE_NAME}" />
+								<Text text="{oEmpDetailModel>ADD_TYPE}" />
 								<Text text="{oEmpDetailModel>REGION}" />
 								<Text text="{oEmpDetailModel>LOCATION_DETAILS}" />
 							</cells>
