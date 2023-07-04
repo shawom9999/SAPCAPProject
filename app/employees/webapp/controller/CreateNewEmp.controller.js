@@ -42,7 +42,8 @@ sap.ui.define([
                     "SALARY": null,
                     "SEL_PROJECTS": null,
                     "SEL_TECHNOLOGIES": null,
-                    "Address": []
+                    "Address": [],
+                    "DEPT_NAME": null
                 });
             },
 
@@ -291,6 +292,34 @@ sap.ui.define([
                     oController.oGlobalBusyDialog.close();
                     MessageBox.error(err.toString());
                 }); 
+            },
+
+            /**
+             * Function called to open Department value help dialog
+             */
+             handleTechValueHelp: function () {
+                Fragment.load({
+                    name: "employees.view.DeptValueHelp",
+                    controller: this
+                }).then(function name(oFragment) {
+                    this.deptValueHelp = oFragment;
+                    this.getView().addDependent(this.deptValueHelp);
+                    oFragment.open();
+                }.bind(this));
+            },
+
+            onDeptValueHelpClose: function () {
+                this.deptValueHelp.close();
+                this.deptValueHelp.destroy(); 
+            },
+
+            onDeptOkPress: function () {
+                let deptComboBox = sap.ui.getCore().byId("deptValueHelp"),
+                    oCreateEmpModel = this.getView().getModel("oCreateEmpModel");
+                oCreateEmpModel.setProperty("/DEPT_ID", deptComboBox.getSelectedKey());
+                oCreateEmpModel.setProperty("/DEPT_NAME", deptComboBox.getSelectedItem()?.getText());
+
+                this.onDeptValueHelpClose();
             }
             
         });

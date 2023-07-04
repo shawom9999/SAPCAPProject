@@ -38,16 +38,17 @@
 						<Input value="{oCreateEmpModel>/EMAIL}" />
 						<Label text="Date Of Birth" />
 						<DatePicker value="{oCreateEmpModel>/DATEOFBIRTH}" valueFormat="yyyy-MM-dd" />
-						<Label text="Department" />
-						<Select items="{/Departments}" selectedKey="{oCreateEmpModel>/DEPT_ID}">
+						<Label text="Department" />						
+						<Input valueHelpOnly="true" valueHelpRequest="handleTechValueHelp" showValueHelp="true" value="{oCreateEmpModel>/DEPT_NAME}"/>
+						<!-- <Select items="{/Departments}" selectedKey="{oCreateEmpModel>/DEPT_ID}">
 							<items>
 								<core:Item text="{DEPT_NAME}" key="{DEPT_ID}"/>
 							</items>
-						</Select>
+						</Select> -->
 						<Label text="Salary" />
-						<Input value="{oCreateEmpModel>/CURRENCY}" maxLength="3">
+						<Input value="{oCreateEmpModel>/CURRENCY}" maxLength="3" placeholder="Currency">
 						</Input>
-						<Input value="{oCreateEmpModel>/SALARY}">
+						<Input value="{oCreateEmpModel>/SALARY}" placeholder="Salary">
 							<layoutData>
 								<l:GridData span="XL1 L2 M2 S4" />
 							</layoutData>

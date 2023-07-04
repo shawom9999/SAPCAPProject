@@ -1,7 +1,7 @@
 <mvc:View controllerName="employees.controller.EmpDetail"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
-    <Page id="page" title="Create New Employee">
+    <Page id="page" title="Employee Details">
         <content>
             <VBox class="sapUiSmallMargin">
 				<f:SimpleForm
