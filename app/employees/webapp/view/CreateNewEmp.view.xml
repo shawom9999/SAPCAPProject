@@ -39,7 +39,7 @@
 						<Label text="Date Of Birth" />
 						<DatePicker value="{oCreateEmpModel>/DATEOFBIRTH}" valueFormat="yyyy-MM-dd" />
 						<Label text="Department" />						
-						<Input valueHelpOnly="true" valueHelpRequest="handleTechValueHelp" showValueHelp="true" value="{oCreateEmpModel>/DEPT_NAME}"/>
+						<Input valueHelpOnly="true" valueHelpRequest="handleDeptValueHelp" showValueHelp="true" value="{oCreateEmpModel>/DEPT_NAME}"/>
 						<!-- <Select items="{/Departments}" selectedKey="{oCreateEmpModel>/DEPT_ID}">
 							<items>
 								<core:Item text="{DEPT_NAME}" key="{DEPT_ID}"/>

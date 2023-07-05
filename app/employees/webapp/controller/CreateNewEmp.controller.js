@@ -297,7 +297,7 @@ sap.ui.define([
             /**
              * Function called to open Department value help dialog
              */
-             handleTechValueHelp: function () {
+             handleDeptValueHelp: function () {
                 Fragment.load({
                     name: "employees.view.DeptValueHelp",
                     controller: this
