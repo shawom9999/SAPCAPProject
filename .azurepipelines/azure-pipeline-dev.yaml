@@ -1,0 +1,117 @@
+name: manageemployee-dev-build-to-deliver
+
+variables:
+- group: CF_VARS
+- name: ENV
+  value: dev
+- name: CF_LOGON_URL
+  value: 'https://api.cf.us10-001.hana.ondemand.com/'
+- name: CF_ORG_NAME
+  value: '51ff41edtrial'  
+- name: CF_SPACE_NAME
+  value: 'dev'
+
+resources:
+  containers:
+    - container: mbtci
+      image: 'devxci/mbtci-java11-node16:latest'
+      options: --user 0:0
+    - container: cfcli
+      image: 'ppiper/cf-cli:latest'
+      options: --user 0:0
+
+pool:
+  vmImage: ubuntu-latest
+
+trigger:
+  branches:
+    include: 
+    - main
+
+stages:
+- stage: build
+  displayName: Build
+  jobs:
+    - job: build
+      displayName: Build MTA
+      container: mbtci
+      steps:
+        - checkout: self
+          fetchDepth: 1
+        - script: |
+            exec &> build_log.txt
+            currentDate=$(date -u +"%Y-%m-%d %T UTC")
+            echo 'Build date and time (UTC):' && echo $currentDate
+            echo "Current git branch:" && git branch
+            echo "Current git commit id:" 
+            git rev-parse HEAD && git rev-parse --short HEAD
+            cp .mtacontrol/mta-$(ENV).yaml ./mta.yaml
+            rm -rf .mtacontrol
+            echo "mbt version: " && mbt -v
+            mbt build -p=cf --mtar "manageemployee.mtar" -t=.
+            echo "Displaying workdir (pwd):" && pwd
+            echo "Displaying items in workdir:" && ls -la
+            echo "Build number" && echo $(Build.BuildId)
+          displayName: 'Build mtar'
+        - task: CopyFiles@2
+          displayName: 'Copy files for staging'
+          inputs:
+            Contents: |
+              **/manageemployee.mtar
+              **/build_log.txt
+              **/mta.yaml
+            TargetFolder: '$(Build.ArtifactStagingDirectory)'
+            cleanTargetFolder: true
+            preserveTimestamp: true
+        - publish: $(Build.ArtifactStagingDirectory)/.
+          artifact: ManageEmployee-Dev
+          displayName: 'Publish build artifacts'
+
+
+- stage: deploy
+  displayName: Deploy
+  jobs:
+    - deployment: deploy_dev
+      displayName: Deploy to SAP BTP Deploy Dev
+      container: cfcli
+      environment: 'SAP BTP Deploy Dev'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - checkout: none
+            - download: current
+              artifact: ManageEmployee-Dev
+              displayName: Download MTAR
+            - script: |
+                echo 'using following parameters for login:' '$(CF_USER_NAME)' '$(CF_LOGON_URL)' '$(CF_ORG_NAME)' '$(CF_SPACE_NAME)'
+                echo 'CF version:' && cf --version
+                echo 'API endpoint:' && cf api
+                cf login -u '$(CF_USER_NAME)' -p '$(CF_USER_PASSWORD)' -a '$(CF_LOGON_URL)' -o '$(CF_ORG_NAME)' -s '$(CF_SPACE_NAME)'
+                echo "Showing target:" && cf target
+              displayName: 'Login to space'
+            - script: |
+                echo 'listing staging directory'
+                ls -la $(Pipeline.Workspace)
+              displayName: Prepare CF deployment
+            - script: |
+                echo 'Starting deploy...'
+                cf deploy $(Pipeline.Workspace)/ManageEmployee-Dev/manageemployee.mtar -f --version-rule ALL              
+                if [ "$?" -eq "1" ]; then
+                  exit 1
+                fi
+              displayName: Deployment
+            - script: |
+                cf download-mta-op-logs --mta manageemployee --last 1 -d '$(Build.ArtifactStagingDirectory)'
+              displayName: Get MTA logs
+            - task: CopyFiles@2
+              displayName: 'Copy Files for staging'
+              inputs:
+                Contents: |
+                  **/mta-op**
+                TargetFolder: '$(Build.ArtifactStagingDirectory)'
+                preserveTimestamp: true
+            - publish: $(Build.ArtifactStagingDirectory)/.
+              artifact: ManageEmployee-Dev-MTA-LOG
+
+
