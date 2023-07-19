@@ -24,9 +24,7 @@ pool:
   vmImage: ubuntu-latest
 
 trigger:
-  branches:
-    include: 
-    - main
+  none
 
 stages:
 - stage: build
