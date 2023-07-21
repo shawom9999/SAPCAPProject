@@ -53,6 +53,16 @@ modules:
     - npm install
     - npm run build:cf
     supported-platforms: []
+- name: departments
+  type: html5
+  path: app/departments
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
 - name: manageemployee-destination-content
   type: com.sap.application.content
   requires:
@@ -83,16 +93,7 @@ modules:
         existing_destinations_policy: ignore
   build-parameters:
     no-source: true
-- name: departments
-  type: html5
-  path: app/departments
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
+
 resources:
 - name: omkar-hdi-dev
   type: com.sap.xs.hdi-container
