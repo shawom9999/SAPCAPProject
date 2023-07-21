@@ -1,1 +1,0 @@
-sap.ui.define(["sap/ui/core/mvc/Controller"],function(e){"use strict";return e.extend("employees.controller.Master",{onInit:function(){this.oRouter=this.getOwnerComponent().getRouter()},onDeptPress:function(e){let t=e.getParameter("listItem").getBindingContext().getObject();this.oRouter.navTo("RouteEmployeeData",{deptId:t.DEPT_ID})}})});
