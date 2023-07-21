@@ -246,7 +246,7 @@ sap.ui.define([
                     oController.oGlobalBusyDialog.close();
                     MessageBox.success(`Employee ${oController._empId} \n updated successfully`,{
                         onClose: function () {
-                            oView.getParent().getParent().setMode("ShowHideMode");
+                            oView.getParent().getParent().setMode("PopoverMode");
                             oController.oRouter.navTo("RouteMaster");
                         }
                     });   

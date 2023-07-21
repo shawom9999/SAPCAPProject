@@ -63,7 +63,7 @@ sap.ui.define([
 
             onCancelPress: function () {
                 this.oRouter.navTo("RouteMaster");
-                this.getView().getParent().getParent().setMode("ShowHideMode");
+                this.getView().getParent().getParent().setMode("PopoverMode");
             },
 
             /**
@@ -283,7 +283,7 @@ sap.ui.define([
                     oController.oGlobalBusyDialog.close();
                     MessageBox.success(`Employee ${empId} \n created successfully`,{
                         onClose: function () {
-                            oView.getParent().getParent().setMode("ShowHideMode");
+                            oView.getParent().getParent().setMode("PopoverMode");
                             oController.oRouter.navTo("RouteMaster");
                         }
                     });

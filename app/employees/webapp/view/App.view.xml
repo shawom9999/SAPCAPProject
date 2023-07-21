@@ -2,6 +2,6 @@
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m">
-    <SplitApp id="app" mode="StretchCompressMode">
+    <SplitApp id="app" mode="PopoverMode" masterButtonText="Home">
     </SplitApp>
 </mvc:View>
