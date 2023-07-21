@@ -25,10 +25,10 @@
 						<Label text="Employee Id" />
 						<Text id="name" text="{EMP_ID}"/>						
 						<Label text="Name" />
-						<Input value="{FIRST_NAME}" placeholder="Fisrt Name">
-							<layoutData>
+						<Input value="{FIRST_NAME}" placeholder="First Name">
+							<!-- <layoutData>
 								<l:GridData span="XL1 L2 M2 S4" />
-							</layoutData>
+							</layoutData> -->
 						</Input>
 						<Input value="{MIDDLE_NAME}" placeholder="Middle Name"/>
 						<Input value="{LAST_NAME}" placeholder="Last Name"/>
@@ -48,9 +48,9 @@
 						<Input value="{CURRENCY}" maxLength="3">
 						</Input>
 						<Input value="{SALARY}">
-							<layoutData>
+							<!-- <layoutData>
 								<l:GridData span="XL1 L2 M2 S4" />
-							</layoutData>
+							</layoutData> -->
 						</Input>
 						<Label text="Projects" />
 						<MultiComboBox items="{/Projects}" selectedKeys="{oEmpDetailModel>/SEL_PROJECTS}">
